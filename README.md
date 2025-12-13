@@ -84,6 +84,36 @@ You can also use a PKCS#12 container.
 curl -v --cert-type P12 --cert client-bundle.p12:password https://mtls.certauth.dev
 ```
 
+## 🔐 Trusted CAs & Roots
+
+This service validates client certificates against the **standard Mozilla CA Certificate Store** (commonly used by Linux distributions and browsers).
+
+- **Public CAs:** Certificates issued by recognized public CAs (e.g., DigiCert, Let's Encrypt, GlobalSign) are accepted.
+- **Self-Signed / Private CAs:** Currently, self-signed certificates or private corporate roots are **not trusted** and will result in a `403 Forbidden` response.
+
+## 📡 Protocol Support
+
+To ensure modern security standards, the service supports:
+- **TLS 1.3** (Recommended)
+- **TLS 1.2**
+
+Legacy protocols (TLS 1.0, 1.1) and weak cipher suites are disabled.
+
+## ⚖️ Fair Use Policy
+
+This API is provided as a free public utility.
+- Please be mindful of resource usage.
+- Heavy automated scanning or integration into high-frequency CI/CD pipelines is discouraged and may be subject to rate limiting.
+
+## 🔒 Privacy & Security
+
+We take security seriously. Please note the following regarding your usage of this service:
+
+- **Stateless Operation:** This service is entirely stateless. We do not store, log, or cache any certificate data presented during the request. The validation is performed in memory, and the results are discarded immediately after the response is sent.
+- **Private Keys:** Following standard mTLS protocol, **your private key is never transmitted to the server**. It remains securely on your client machine. The server only receives and validates your public certificate chain.
+- **Usage:** This tool is intended for development, debugging, and testing purposes only.
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
