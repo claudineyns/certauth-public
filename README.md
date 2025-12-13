@@ -68,15 +68,15 @@ This should return 401 Unauthorized.
 curl -v https://mtls.certauth.dev
 ```
 
-### 2. Test with a client certificate (PEM + Key)
+#### 2. Test with a client certificate (PEM + Key)
 
 If the certificate is valid and trusted by the service, this returns 200 OK.
 
 ```shell
-curl -v -cert client-cert.pem --key client-key.pem https://mtls.certauth.dev
+curl -v --cert client-cert.pem --key client-key.pem https://mtls.certauth.dev
 ```
 
-### 3. Test with a P12/PFX file
+#### 3. Test with a P12/PFX file
 
 You can also use a PKCS#12 container.
 
