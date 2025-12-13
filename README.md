@@ -65,7 +65,7 @@ You can test the endpoint using standard command-line tools like curl.
 This should return 401 Unauthorized.
 
 ```shell
-curl -v [https://mtls.certauth.dev](https://mtls.certauth.dev)
+curl -v https://mtls.certauth.dev
 ```
 
 #### 2. Test with a client certificate (PEM + Key)
@@ -73,7 +73,7 @@ curl -v [https://mtls.certauth.dev](https://mtls.certauth.dev)
 If the certificate is valid and trusted by the service, this returns 200 OK.
 
 ```shell
-curl -v --cert client-cert.pem --key client-key.pem [https://mtls.certauth.dev](https://mtls.certauth.dev)
+curl -v --cert client-cert.pem --key client-key.pem https://mtls.certauth.dev
 ```
 
 #### 3. Test with a P12/PFX file
@@ -81,7 +81,7 @@ curl -v --cert client-cert.pem --key client-key.pem [https://mtls.certauth.dev](
 You can also use a PKCS#12 container.
 
 ```shell
-curl -v --cert-type P12 --cert client-bundle.p12:password [https://mtls.certauth.dev](https://mtls.certauth.dev)
+curl -v --cert-type P12 --cert client-bundle.p12:password https://mtls.certauth.dev
 ```
 
 ## 🔐 Trusted CAs & Roots
