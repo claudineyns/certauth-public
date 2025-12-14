@@ -23,18 +23,23 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
 ```json
 {
   "ssl": true,
-  "ssl-reject-reason": "",
-  "trusted-by": "C=US, O=Let's Encrypt, CN=R3",
-  "request-data": "eyJ0ZXN0IjogIm1lc3NhZ2UifQ==",
-  "ssl-client": [
+  "ssl_reject_reason": [
     {
-      "subjectDN": "CN=client.example.com, O=My Organization",
-      "issuerDN": "C=US, O=Let's Encrypt, CN=R3",
+      "kind": "UNTRUSTED_CHAIN",
+      "message": "Path does not chain with any of the trust anchors"
+    }
+  ],
+  "trusted_by": "C=US, O=Let's Encrypt, CN=R3",
+  "request_data": "eyJ0ZXN0IjogIm1lc3NhZ2UifQ==",
+  "ssl_client": [
+    {
+      "subject_dn": "CN=client.example.com, O=My Organization",
+      "issuer_dn": "C=US, O=Let's Encrypt, CN=R3",
       "serial": "04d8f2...",
-      "notBefore": 1698765432000,
-      "notBeforeDateTime": "Tue, 31 Oct 2023 15:17:12 GMT",
-      "notAfter": 1706541432000,
-      "notAfterDateTime": "Mon, 29 Jan 2024 15:17:12 GMT"
+      "valid_from": "1970-01-01T00:00:00Z",
+      "valid_until": "1970-12-31T23:59:59Z"
+      "status": "VALID_AND_NOT_EXPIRED",
+      "fingerprint_sha256": "A1:B2:C3:D4...",
     }
   ]
 }
@@ -45,20 +50,20 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
 | Field | Type | Description |
 | :--- | :--- | :--- |
 | `ssl` | Boolean | `true` if a client certificate was received, `false` otherwise. |
-| `trusted-by` | String | The Distinguished Name (DN) of the CA that validated the chain. |
-| `request-data` | String | The original request body payload encoded in **Base64**. Useful for verifying payload integrity. |
-| `ssl-reject-reason` | String | Description of reason the certificate chain was rejected (e.g., expired, self-signed, untrusted root). `null` if valid. |
-| `ssl-client` | Array | A list of objects detailing the certificate chain received. See [Client Certificate Object](#client-certificate-object-ssl-client-items) |
+| `trusted_by` | String | The Distinguished Name (DN) of the CA that validated the chain. |
+| `request_data` | String | The original request body payload encoded in **Base64**. Useful for verifying payload integrity. |
+| `ssl_reject_reason` | Array | A list of reasons the certificate chain was rejected. Empty `[]` if valid. |
+| `ssl_client` | Array | A list of objects detailing the certificate chain received. See [Client Certificate Object](#client-certificate-object-ssl_client-items) |
 
-### Client Certificate Object (`ssl-client` items)
+### Client Certificate Object (`ssl_client` items)
 
-- `subjectDN`: The Distinguished Name of the certificate.
-- `issuerDN`: The Distinguished Name of the certificate issuer.
+- `subject_dn`: The Distinguished Name of the certificate.
+- `issuer_dn`: The Distinguished Name of the certificate issuer.
 - `serial`: The certificate serial number in hexadecimal format.
-- `notBefore`: Validity start time (Linux milliseconds).
-- `notBeforeDateTime`: Validity start time (RFC 1123 format).
-- `notAfter`: Validity expiration time (Linux milliseconds).
-- `notAfterDateTime`: Validity expiration time (RFC 1123 format).
+- `valid_from`: Validity start time.
+- `valid_until`: Validity expiration time.
+- `fingerprint_sha256`: Certificate thumbprint.
+- `status`: Certificate validity status.
 
 ### 🛠 Usage Examples (cURL)
 
@@ -100,8 +105,10 @@ This service validates client certificates against the **standard Mozilla CA Cer
 To ensure modern security standards, the service supports:
 - **TLS 1.3** (Recommended)
 - **TLS 1.2**
+- **TLS 1.1**
+- **TLS 1.0**
 
-Legacy protocols (TLS 1.0, 1.1) and weak cipher suites are disabled.
+Legacy protocols (TLS 1.0, 1.1) if used, will produce an HTTP status `403 Forbidden`.
 
 ## ⚖️ Fair Use Policy
 
