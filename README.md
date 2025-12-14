@@ -23,7 +23,9 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
 ```json
 {
   "ssl": true,
+  "ssl-reject-reason": "",
   "trusted-by": "C=US, O=Let's Encrypt, CN=R3",
+  "request-data": "eyJ0ZXN0IjogIm1lc3NhZ2UifQ==",
   "ssl-client": [
     {
       "subjectDN": "CN=client.example.com, O=My Organization",
@@ -44,6 +46,8 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
 | :--- | :--- | :--- |
 | `ssl` | Boolean | `true` if a client certificate was received, `false` otherwise. |
 | `trusted-by` | String | The Distinguished Name (DN) of the CA that validated the chain. |
+| `request-data` | String | The original request body payload encoded in **Base64**. Useful for verifying payload integrity. |
+| `ssl-reject-reason` | String | Description of reason the certificate chain was rejected (e.g., expired, self-signed, untrusted root). `null` if valid. |
 | `ssl-client` | Array | A list of objects detailing the certificate chain received. See [Client Certificate Object](#client-certificate-object-ssl-client-items) |
 
 ### Client Certificate Object (`ssl-client` items)
