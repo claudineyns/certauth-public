@@ -93,12 +93,25 @@ You can also use a PKCS#12 container.
 curl -v --cert-type P12 --cert client-bundle.p12:password https://mtls.certauth.dev
 ```
 
-## 🔐 Trusted CAs & Roots
+## 🔐 Trusted CAs & Validation Logic
 
-This service validates client certificates against the **standard Mozilla CA Certificate Store** (commonly used by Linux distributions and browsers).
+The service employs a **Dual Trust Mode** to support both public and development scenarios:
 
-- **Public CAs:** Certificates issued by recognized public CAs (e.g., DigiCert, Let's Encrypt, GlobalSign) are accepted.
-- **Self-Signed / Private CAs:** Currently, self-signed certificates or private corporate roots are **not trusted** and will result in a `403 Forbidden` response.
+### 1. Public Trust Mode (Standard)
+If the provided certificate chain ends with a root CA certificate that is **not** self-signed (or is a known public root), the service validates it against the **Mozilla CA Certificate Store**.
+* **Success:** Chain is valid and rooted in a trusted public CA.
+* **Failure:** Chain is broken, expired, or rooted in an unknown CA.
+
+### 2. Self-Signed / Custom Trust Mode (Dev Friendly)
+If the provided chain consists of a **single self-signed certificate** or the **last certificate in the chain is self-signed**, the service switches to "Custom Trust Mode".
+* **Logic:** The service treats the self-signed certificate as the **Trust Anchor** for that specific request.
+* **Validation:** It verifies that the chain is cryptographically valid relative to that self-signed root (signatures and dates).
+* **Result:** Returns `200 OK` with `"ssl": true`, allowing you to debug self-signed chains without setting up a public PKI.
+
+### ⛓️ Chain Order Validation
+Strict RFC compliance is enforced regarding the order of certificates in the chain.
+* The chain must be ordered: `[Client Cert] -> [Intermediate A] -> [Intermediate B] -> [Root/Anchor]`.
+* If a certificate's **Issuer** does not match the **Subject** of the next certificate in the list, the request is rejected with `403 Forbidden` and a specific error message in `ssl-reject-reason`.
 
 ## 📡 Protocol Support
 
@@ -123,6 +136,14 @@ We take security seriously. Please note the following regarding your usage of th
 - **Stateless Operation:** This service is entirely stateless. We do not store, log, or cache any certificate data presented during the request. The validation is performed in memory, and the results are discarded immediately after the response is sent.
 - **Private Keys:** Following standard mTLS protocol, **your private key is never transmitted to the server**. It remains securely on your client machine. The server only receives and validates your public certificate chain.
 - **Usage:** This tool is intended for development, debugging, and testing purposes only.
+
+## 📚 Useful Resources
+
+Generating valid certificate chains for mTLS testing can be complex. If you want to learn more about certificate management or need a quick reference for OpenSSL commands, I highly recommend:
+
+- **[OpenSSL Cheatsheet by GoLinuxCloud](https://www.golinuxcloud.com/openssl-cheatsheet/)**
+
+This resource was instrumental in the learning process for this project and is an excellent guide for creating your own CA and client certificates.
 
 ## License
 
