@@ -125,10 +125,8 @@ Strict RFC compliance is enforced regarding the order of certificates in the cha
 To ensure modern security standards, the service supports:
 - **TLS 1.3** (Recommended)
 - **TLS 1.2**
-- **TLS 1.1**
-- **TLS 1.0**
 
-Legacy protocols (TLS 1.0, 1.1) if used, will produce an HTTP status `403 Forbidden`.
+Legacy protocols (TLS 1.0, 1.1) is not allowed.
 
 ## ⚖️ Fair Use Policy
 
