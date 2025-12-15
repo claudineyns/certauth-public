@@ -29,8 +29,6 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
       "message": "Path does not chain with any of the trust anchors"
     }
   ],
-  "trusted_by": "C=US, O=Let's Encrypt, CN=R3",
-  "request_data": "eyJ0ZXN0IjogIm1lc3NhZ2UifQ==",
   "ssl_client": [
     {
       "subject_dn": "CN=client.example.com, O=My Organization",
@@ -41,7 +39,16 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
       "status": "VALID_AND_NOT_EXPIRED",
       "fingerprint_sha256": "A1:B2:C3:D4...",
     }
-  ]
+  ],
+  "trusted_by": {
+    "subject_dn": "C=US, O=Let's Encrypt, CN=R3",
+    "issuer_dn": "C=US, O=Let's Encrypt, CN=R3",
+    "serial": "04d8f2...",
+    "valid_from": "1970-01-01T00:00:00Z",
+    "valid_until": "1970-12-31T23:59:59Z"
+    "fingerprint_sha256": "A1:B2:C3:D4...",
+  },
+  "request_data": "eyJ0ZXN0IjogIm1lc3NhZ2UifQ=="
 }
 ```
 
@@ -50,7 +57,7 @@ In all scenarios, the endpoint returns a JSON object containing the validation d
 | Field | Type | Description |
 | :--- | :--- | :--- |
 | `ssl` | Boolean | `true` if a client certificate was received, `false` otherwise. |
-| `trusted_by` | String | The Distinguished Name (DN) of the CA that validated the chain. |
+| `trusted_by` | Object | Detailed information about trusted anchor that validated the chain. |
 | `request_data` | String | The original request body payload encoded in **Base64**. Useful for verifying payload integrity. |
 | `ssl_reject_reason` | Array | A list of reasons the certificate chain was rejected. Empty `[]` if valid. |
 | `ssl_client` | Array | A list of objects detailing the certificate chain received. See [Client Certificate Object](#client-certificate-object-ssl_client-items) |
