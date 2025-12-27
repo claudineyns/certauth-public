@@ -13,6 +13,7 @@ This tool inspects the client certificate provided in the TLS handshake and retu
 | **`200 OK`** | The client certificate was provided and the chain is **valid** (trusted by the server). |
 | **`401 Unauthorized`** | No client certificate was provided in the request. |
 | **`403 Forbidden`** | A client certificate was provided, but the chain is **invalid** or untrusted. |
+| **`406 Not Acceptable`** | The client request did not include `application/json` or `*/*`in the `Accept` header. |
 
 ## 📄 Response Format
 
@@ -78,15 +79,14 @@ You can test the endpoint using standard command-line tools like curl.
 
 #### 1. Test without a certificate
 
-This should return 401 Unauthorized.
-
 ```shell
+# This should return 401 Unauthorized
 curl -v https://mtls.certauth.dev
 ```
 
 #### 2. Test with a client certificate (PEM + Key)
 
-If the certificate is valid and trusted by the service, this returns 200 OK.
+If the certificate is valid and trusted by the service, this returns `200 OK`. Otherwise, returns `403 Forbidden`.
 
 ```shell
 curl -v --cert client-cert.pem --key client-key.pem https://mtls.certauth.dev
@@ -98,6 +98,15 @@ You can also use a PKCS#12 container.
 
 ```shell
 curl -v --cert-type P12 --cert client-bundle.p12:password https://mtls.certauth.dev
+```
+
+#### 4. Test with Invalid Accept Header
+
+The service strictly produces JSON. If your client does not request such in header `Accept`, the service will reject the request.
+
+```shell
+# This will return 406 Not Acceptable
+curl -v -H "Accept: application/xml" https://mtls.certauth.dev
 ```
 
 ## 🔐 Trusted CAs & Validation Logic
