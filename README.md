@@ -15,6 +15,18 @@ This tool inspects the client certificate provided in the TLS handshake and retu
 | **`403 Forbidden`** | A client certificate was provided, but the chain is **invalid** or untrusted. |
 | **`406 Not Acceptable`** | The client request did not include `application/json` or `*/*`in the `Accept` header. |
 
+## ⚡ Quick Start (Automated Script)
+
+Don't want to manually generate certificates? We provide a ready-to-use bash script that generates a temporary self-signed certificate and tests the endpoint automatically.
+
+```bash
+# Download and run the test script
+curl -O https://raw.githubusercontent.com/claudineyns/certauth-public/main/test-validator.sh
+chmod +x test-validator.sh
+./test-validator.sh
+```
+*Requirements: `curl` and `openssl`.*
+
 ## 📄 Response Format
 
 In all scenarios, the endpoint returns a JSON object containing the validation details.
