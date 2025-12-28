@@ -2,7 +2,7 @@
 
 A simple, public utility service designed to test, debug, and validate Mutual TLS (mTLS) client authentication.
 
-The service is available at: **https://mtls.certauth.dev**
+The service is available by invoking endpoint: **https://mtls.certauth.dev**
 
 ## 🚀 How it Works
 
